@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { HashRouter, Link, Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom'
+import { HashRouter, Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { lessons, quiz } from './content'
 
 const storageKey = 'github-schulung-chapter-progress'
@@ -44,6 +44,16 @@ function lessonProgress(lessonId: number, done: string[]) {
     total: lesson.chapters.length,
     percent: Math.round((completed / lesson.chapters.length) * 100),
   }
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [pathname])
+
+  return null
 }
 
 function Header() {
@@ -120,10 +130,10 @@ function Home({ done }: { done: string[] }) {
     <main>
       <section className="hero shell">
         <div className="heroCopy">
-          <p className="eyebrow">Modul 219 · Interaktive Ausbildungssequenz</p>
-          <h1>GitHub lernen wie auf einer echten Lernplattform.</h1>
+          <p className="eyebrow">Modul 219 · GitHub Grundlagen</p>
+          <h1>GitHub Schritt für Schritt lernen.</h1>
           <p className="lead">
-            Sechs Module, 18 Unterlektionen, Praxisaufgaben, Git-Befehle, Fortschritt und direkte Vertiefung in der offiziellen GitHub-Dokumentation.
+            Eine strukturierte Schulung mit sechs Modulen, 18 Unterlektionen, Übungen, Git-Befehlen und Verweisen auf die offizielle GitHub-Dokumentation.
           </p>
           <div className="actions">
             <Link className="button primary" to="/module/1">Mit Modul 1 starten</Link>
@@ -519,6 +529,7 @@ function App() {
 
   return (
     <HashRouter>
+      <ScrollToTop />
       <div>
         <Header />
         <Routes>
