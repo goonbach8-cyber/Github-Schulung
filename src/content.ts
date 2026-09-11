@@ -1,8 +1,15 @@
-export type LessonSection = {
+export type Chapter = {
+  slug: string
   title: string
+  summary: string
+  duration: string
   text: string
   bullets?: string[]
+  steps?: string[]
   code?: string
+  task: string[]
+  docsUrl: string
+  docsLabel: string
 }
 
 export type Lesson = {
@@ -13,7 +20,7 @@ export type Lesson = {
   duration: string
   intro: string
   goals: string[]
-  sections: LessonSection[]
+  chapters: Chapter[]
   exercise: {
     title: string
     tasks: string[]
@@ -29,55 +36,91 @@ export const lessons: Lesson[] = [
     slug: 'git-und-github',
     title: 'Git & GitHub verstehen',
     subtitle: 'Versionsverwaltung und Plattform unterscheiden.',
-    duration: '10–15 Min.',
+    duration: '20–25 Min.',
     intro:
-      'Git und GitHub gehören zusammen, sind aber nicht dasselbe. Git ist die Versionsverwaltung auf deinem Computer. GitHub ist eine Plattform, auf der Git-Repositories gespeichert, geteilt und gemeinsam bearbeitet werden können.',
+      'Bevor du mit Branches und Pull Requests arbeitest, musst du verstehen, was Git lokal macht und welche Rolle GitHub als Plattform übernimmt.',
     goals: [
-      'Git und GitHub voneinander unterscheiden.',
+      'Git und GitHub klar voneinander unterscheiden.',
       'Repository, Working Directory und Remote erklären.',
-      'Verstehen, warum Versionsverwaltung in Projekten wichtig ist.',
+      'Verstehen, wie lokale und entfernte Änderungen zusammenhängen.',
     ],
-    sections: [
+    chapters: [
       {
-        title: 'Was ist Git?',
+        slug: 'git-vs-github',
+        title: 'Git vs. GitHub',
+        summary: 'Die zwei Begriffe sauber auseinanderhalten.',
+        duration: '6 Min.',
         text:
-          'Git speichert Änderungen an Dateien als nachvollziehbare Versionen. Dadurch kannst du sehen, wer etwas verändert hat, ältere Stände vergleichen und bei Bedarf zurückgehen.',
+          'Git ist ein Versionsverwaltungssystem. Es läuft lokal auf deinem Computer und speichert Änderungen an Dateien als nachvollziehbare Versionen. GitHub ist eine Online-Plattform rund um Git. Dort kannst du Repositories hosten, mit anderen Personen zusammenarbeiten und Funktionen wie Pull Requests, Issues und Actions nutzen.',
         bullets: [
-          'Git läuft lokal auf deinem Computer.',
-          'Änderungen werden in Commits gespeichert.',
-          'Branches ermöglichen paralleles Arbeiten.',
+          'Git = Versionsverwaltung auf deinem Gerät.',
+          'GitHub = Plattform für Repositories und Zusammenarbeit.',
+          'Du kannst Git auch ohne GitHub verwenden.',
+          'GitHub baut auf Git auf und ergänzt Team-Funktionen.',
         ],
+        task: [
+          'Formuliere in einem Satz den Unterschied zwischen Git und GitHub.',
+          'Nenne zwei Funktionen, die GitHub zusätzlich zu Git bietet.',
+        ],
+        docsUrl: 'https://docs.github.com/en/get-started/start-your-journey/about-github-and-git',
+        docsLabel: 'About GitHub and Git',
       },
       {
-        title: 'Was ist GitHub?',
+        slug: 'repository-aufbau',
+        title: 'Wie ein Repository aufgebaut ist',
+        summary: 'Dateien, Verlauf und Metadaten verstehen.',
+        duration: '7 Min.',
         text:
-          'GitHub stellt Git-Repositories online bereit und ergänzt Git um Funktionen für Zusammenarbeit. Dazu gehören Pull Requests, Issues, Reviews, Actions und Berechtigungen.',
+          'Ein Repository ist ein Projektordner mit Versionsverlauf. Neben den eigentlichen Dateien speichert Git Informationen zu Commits, Branches und dem aktuellen Zustand des Projekts.',
         bullets: [
-          'Repository online speichern und teilen.',
-          'Zusammenarbeit über Pull Requests und Reviews.',
-          'Aufgaben und Fehler mit Issues organisieren.',
-          'Automatisierungen über GitHub Actions ausführen.',
+          'Working Directory: Dateien, an denen du gerade arbeitest.',
+          'Git-Verlauf: gespeicherte Commits des Projekts.',
+          'Branch: eine eigene Entwicklungslinie.',
+          'Remote: die entfernte Version des Repositories, zum Beispiel auf GitHub.',
         ],
+        code: 'git status\ngit log --oneline',
+        task: [
+          'Öffne ein Repository auf GitHub.',
+          'Finde die Dateiübersicht und die Commit-Historie.',
+          'Suche den Namen des aktuell angezeigten Branches.',
+        ],
+        docsUrl: 'https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories',
+        docsLabel: 'About repositories',
       },
       {
+        slug: 'local-und-remote',
         title: 'Local und Remote',
+        summary: 'Verstehen, wo Änderungen wirklich liegen.',
+        duration: '7 Min.',
         text:
-          'Dein lokales Repository liegt auf deinem Gerät. Das Remote-Repository liegt beispielsweise auf GitHub. Mit push sendest du lokale Commits zu GitHub, mit pull holst du Änderungen herunter.',
-        code: 'git clone <repository-url>\ngit status\ngit pull\ngit push',
+          'Dein lokales Repository befindet sich auf deinem Gerät. Das Remote-Repository liegt zum Beispiel auf GitHub. Erst mit push überträgst du lokale Commits zu GitHub. Mit pull holst du Änderungen aus dem Remote-Repository auf deinen Computer.',
+        steps: [
+          'Repository mit clone auf den Computer holen.',
+          'Lokal Dateien bearbeiten und committen.',
+          'Commits mit push zu GitHub übertragen.',
+          'Änderungen anderer Personen mit pull holen.',
+        ],
+        code: 'git clone <repository-url>\ngit pull\ngit push',
+        task: [
+          'Erkläre, warum ein lokaler Commit noch nicht automatisch auf GitHub sichtbar ist.',
+          'Ordne clone, pull und push den Richtungen lokal → remote bzw. remote → lokal zu.',
+        ],
+        docsUrl: 'https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository',
+        docsLabel: 'Getting changes from a remote repository',
       },
     ],
     exercise: {
-      title: 'Mini-Aufgabe',
+      title: 'Modul-Challenge',
       tasks: [
         'Öffne ein beliebiges Repository auf GitHub.',
-        'Finde den Bereich mit den Dateien und die Commit-Historie.',
-        'Erkläre in einem Satz den Unterschied zwischen Git und GitHub.',
+        'Finde Branch, Commits und README.',
+        'Erkläre einem Kollegen den Unterschied zwischen Git, GitHub, lokalem Repository und Remote.',
       ],
     },
     mistakes: [
       'Git und GitHub als dasselbe Produkt bezeichnen.',
-      'Annehmen, dass Änderungen automatisch auf GitHub landen.',
-      'Direkt an wichtigen Dateien arbeiten, ohne den Versionsverlauf zu beachten.',
+      'Annehmen, dass lokale Änderungen automatisch online sind.',
+      'Nicht wissen, auf welchem Branch man arbeitet.',
     ],
     docsUrl: 'https://docs.github.com/en/get-started/start-your-journey/about-github-and-git',
     docsLabel: 'GitHub Docs: About GitHub and Git',
@@ -87,106 +130,192 @@ export const lessons: Lesson[] = [
     slug: 'repository',
     title: 'Repository erstellen',
     subtitle: 'Ein Projekt sauber auf GitHub anlegen.',
-    duration: '15 Min.',
+    duration: '25–30 Min.',
     intro:
-      'Ein Repository ist der zentrale Ort eines Projekts. Es enthält Dateien, Ordner und den vollständigen Git-Verlauf. Ein gutes Repository hat einen verständlichen Namen, eine README und eine passende Sichtbarkeit.',
+      'Ein gutes Repository beginnt mit einer klaren Struktur. In diesem Modul erstellst du ein Repository, legst die wichtigsten Dateien an und holst das Projekt auf deinen Computer.',
     goals: [
-      'Ein neues Repository auf GitHub erstellen.',
-      'Public und Private sinnvoll unterscheiden.',
-      'Eine README als Einstiegspunkt verwenden.',
+      'Ein Repository korrekt erstellen.',
+      'README und .gitignore sinnvoll verwenden.',
+      'Ein Repository klonen und lokal öffnen.',
     ],
-    sections: [
+    chapters: [
       {
-        title: 'Repository über GitHub erstellen',
+        slug: 'repository-erstellen',
+        title: 'Repository auf GitHub erstellen',
+        summary: 'Name, Sichtbarkeit und Startoptionen richtig wählen.',
+        duration: '8 Min.',
         text:
-          'Klicke auf GitHub auf New repository. Vergib einen kurzen Namen, optional eine Beschreibung und entscheide, ob das Repository öffentlich oder privat sein soll.',
+          'Über New repository legst du ein neues Projekt an. Der Name sollte kurz und eindeutig sein. Die Sichtbarkeit entscheidet, wer das Repository sehen kann.',
         bullets: [
-          'Repository-Name ohne unnötige Sonderzeichen wählen.',
-          'README direkt initialisieren, wenn du neu beginnst.',
-          '.gitignore nutzen, wenn lokale oder generierte Dateien ausgeschlossen werden sollen.',
+          'Public: grundsätzlich öffentlich sichtbar.',
+          'Private: nur für berechtigte Personen sichtbar.',
+          'README kann direkt beim Erstellen hinzugefügt werden.',
+          'Lizenz und .gitignore können ebenfalls vorbereitet werden.',
         ],
+        steps: [
+          'Auf GitHub New repository auswählen.',
+          'Repository-Name und Beschreibung eintragen.',
+          'Public oder Private festlegen.',
+          'README initialisieren.',
+          'Repository erstellen.',
+        ],
+        task: [
+          'Erstelle ein Test-Repository mit README.',
+          'Vergib eine kurze Beschreibung.',
+          'Prüfe, ob die gewählte Sichtbarkeit zu deinem Zweck passt.',
+        ],
+        docsUrl: 'https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository',
+        docsLabel: 'Creating a new repository',
       },
       {
-        title: 'Public oder Private?',
+        slug: 'readme-und-gitignore',
+        title: 'README & .gitignore',
+        summary: 'Das Repository verständlich und sauber halten.',
+        duration: '9 Min.',
         text:
-          'Public bedeutet, dass grundsätzlich jede Person das Repository sehen kann. Private beschränkt den Zugriff auf berechtigte Personen. Für interne Schulprojekte oder vertrauliche Inhalte ist Private meistens sinnvoller.',
-      },
-      {
-        title: 'README sinnvoll aufbauen',
-        text:
-          'Die README erklärt das Projekt. Sie sollte kurz beantworten, was das Projekt macht, wie es gestartet wird und welche Voraussetzungen nötig sind.',
+          'Die README ist die Einstiegsseite deines Projekts. Eine .gitignore verhindert, dass bestimmte lokale, generierte oder vertrauliche Dateien versehentlich in Git aufgenommen werden.',
+        bullets: [
+          'README: Zweck, Setup, Nutzung und wichtige Hinweise.',
+          '.gitignore: z. B. node_modules, Build-Dateien oder lokale Konfigurationen.',
+          'Keine Passwörter, Tokens oder API-Keys committen.',
+        ],
         code: '# Projektname\n\nKurze Beschreibung.\n\n## Setup\n1. Repository klonen\n2. Abhängigkeiten installieren\n3. Projekt starten',
+        task: [
+          'Ergänze deine README um Ziel, Setup und Nutzung.',
+          'Füge eine passende .gitignore hinzu.',
+          'Überlege, welche Dateien niemals in dein Repository gehören.',
+        ],
+        docsUrl: 'https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes',
+        docsLabel: 'About READMEs',
+      },
+      {
+        slug: 'repository-klonen',
+        title: 'Repository klonen',
+        summary: 'Das Projekt auf deinen Computer holen.',
+        duration: '8 Min.',
+        text:
+          'Mit git clone erstellst du eine lokale Kopie des Repositories inklusive Versionsverlauf und Verbindung zum Remote-Repository.',
+        steps: [
+          'Auf GitHub den Code-Button öffnen.',
+          'HTTPS-URL kopieren.',
+          'Terminal im gewünschten Ordner öffnen.',
+          'git clone ausführen.',
+          'In den neuen Projektordner wechseln.',
+        ],
+        code: 'git clone https://github.com/USER/REPOSITORY.git\ncd REPOSITORY\ngit status',
+        task: [
+          'Klone dein Test-Repository.',
+          'Öffne den Ordner in deinem Editor.',
+          'Führe git status aus und lies die Ausgabe.',
+        ],
+        docsUrl: 'https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository',
+        docsLabel: 'Cloning a repository',
       },
     ],
     exercise: {
-      title: 'Praxis',
+      title: 'Modul-Challenge',
       tasks: [
-        'Erstelle ein Test-Repository.',
-        'Füge eine README hinzu.',
-        'Ergänze Beschreibung, Ziel und Startanleitung.',
+        'Erstelle ein sauberes Test-Repository.',
+        'Dokumentiere es mit einer README.',
+        'Klone es lokal und prüfe die Remote-Verbindung.',
       ],
     },
     mistakes: [
       'Vertrauliche Daten in ein öffentliches Repository hochladen.',
-      'API-Keys, Passwörter oder Tokens committen.',
-      'Repository ohne README und ohne erkennbare Struktur erstellen.',
+      'API-Keys oder Passwörter committen.',
+      'README und Projektstruktur vernachlässigen.',
     ],
-    docsUrl: 'https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository',
-    docsLabel: 'GitHub Docs: Creating a new repository',
+    docsUrl: 'https://docs.github.com/en/repositories/creating-and-managing-repositories',
+    docsLabel: 'GitHub Docs: Repositories',
   },
   {
     id: 3,
     slug: 'commit-und-push',
     title: 'Commit, Push & Pull',
     subtitle: 'Änderungen nachvollziehbar speichern und synchronisieren.',
-    duration: '15–20 Min.',
+    duration: '30–35 Min.',
     intro:
-      'Ein Commit speichert einen sinnvollen Zwischenstand im lokalen Git-Verlauf. Push überträgt Commits zu GitHub. Pull holt neue Änderungen aus dem Remote-Repository und integriert sie lokal.',
+      'Jetzt arbeitest du wirklich mit Git. Du lernst den Weg von einer geänderten Datei über die Staging Area bis zum Commit und anschliessend zu GitHub.',
     goals: [
-      'status, add, commit, push und pull richtig einordnen.',
-      'Saubere Commit-Messages schreiben.',
-      'Lokale und entfernte Änderungen synchronisieren.',
+      'Working Tree, Staging Area und Commit unterscheiden.',
+      'Saubere Commits erstellen.',
+      'Push und Pull korrekt verwenden.',
     ],
-    sections: [
+    chapters: [
       {
-        title: 'Der typische Ablauf',
+        slug: 'status-und-staging',
+        title: 'Status & Staging Area',
+        summary: 'Änderungen kontrolliert für den Commit vorbereiten.',
+        duration: '10 Min.',
         text:
-          'Bevor du commitest, prüfst du zuerst den aktuellen Status. Danach wählst du Änderungen aus, speicherst sie als Commit und lädst sie zu GitHub hoch.',
-        code: 'git status\ngit add .\ngit commit -m "Login-Validierung ergänzt"\ngit push',
-      },
-      {
-        title: 'Gute Commits',
-        text:
-          'Ein Commit sollte eine zusammengehörige Änderung enthalten. Eine gute Commit-Message beschreibt konkret, was geändert wurde.',
+          'Git unterscheidet zwischen geänderten Dateien und Änderungen, die für den nächsten Commit vorgemerkt sind. Mit git status siehst du den aktuellen Zustand. Mit git add verschiebst du Änderungen in die Staging Area.',
+        code: 'git status\ngit add README.md\ngit status',
         bullets: [
-          'Gut: "Fehlerbehandlung beim Login ergänzt"',
-          'Gut: "Navigation auf Mobilgeräten korrigiert"',
-          'Schlecht: "update"',
-          'Schlecht: "zeug fertig"',
+          'Modified: Datei wurde geändert.',
+          'Staged: Änderung ist für den nächsten Commit vorgemerkt.',
+          'Untracked: Git kennt die Datei noch nicht.',
         ],
+        task: [
+          'Ändere deine README.',
+          'Führe git status aus.',
+          'Stage nur die README und prüfe erneut den Status.',
+        ],
+        docsUrl: 'https://docs.github.com/en/get-started/using-git/about-git',
+        docsLabel: 'About Git',
       },
       {
-        title: 'Pull vor neuer Arbeit',
+        slug: 'commits',
+        title: 'Gute Commits erstellen',
+        summary: 'Kleine, verständliche Zwischenstände speichern.',
+        duration: '10 Min.',
         text:
-          'Wenn mehrere Personen an einem Repository arbeiten, solltest du regelmässig den aktuellen Stand holen. So reduzierst du Konflikte.',
-        code: 'git pull',
+          'Ein Commit sollte genau eine zusammengehörige Änderung beschreiben. So bleibt der Verlauf verständlich und Fehler lassen sich leichter nachvollziehen.',
+        bullets: [
+          'Gut: "Login-Validierung für leere Felder ergänzt".',
+          'Gut: "README um Setup-Anleitung erweitert".',
+          'Schlecht: "update".',
+          'Schlecht: "alles fertig".',
+        ],
+        code: 'git commit -m "README um Setup-Anleitung erweitert"\ngit log --oneline',
+        task: [
+          'Erstelle einen Commit für deine README-Änderung.',
+          'Nutze eine konkrete Commit-Message.',
+          'Prüfe den Commit mit git log --oneline.',
+        ],
+        docsUrl: 'https://docs.github.com/en/get-started/using-git/about-git',
+        docsLabel: 'About Git',
+      },
+      {
+        slug: 'push-und-pull',
+        title: 'Push & Pull',
+        summary: 'Lokales und Remote-Repository synchron halten.',
+        duration: '10–15 Min.',
+        text:
+          'Mit push überträgst du lokale Commits zum Remote-Repository. Mit pull holst du neue Änderungen von dort. In Teamprojekten solltest du regelmässig pull verwenden, bevor du neue Arbeit beginnst.',
+        code: 'git pull\ngit push\n\n# Erster Push eines neuen Branches\ngit push -u origin feature/mein-branch',
+        task: [
+          'Pushe deinen neuen Commit.',
+          'Kontrolliere auf GitHub, ob er sichtbar ist.',
+          'Ändere die README einmal direkt auf GitHub und hole die Änderung mit git pull.',
+        ],
+        docsUrl: 'https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository',
+        docsLabel: 'Pushing commits to a remote repository',
       },
     ],
     exercise: {
-      title: 'Praxis',
+      title: 'Modul-Challenge',
       tasks: [
-        'Ändere eine Zeile in deiner README.',
-        'Prüfe die Änderung mit git status.',
-        'Committe sie mit einer verständlichen Message.',
-        'Pushe den Commit zu GitHub und kontrolliere ihn dort.',
+        'Ändere zwei Dateien.',
+        'Erstelle daraus zwei sinnvolle Commits.',
+        'Pushe beide Commits und prüfe den Verlauf auf GitHub.',
       ],
     },
     mistakes: [
-      'Sehr viele unabhängige Änderungen in einen einzigen Commit packen.',
-      'Nichtssagende Commit-Messages verwenden.',
-      'Vor längerer Arbeit nie pull ausführen.',
+      'Zu viele unabhängige Änderungen in einen Commit packen.',
+      'Nichtssagende Commit-Messages schreiben.',
+      'Lange arbeiten, ohne den aktuellen Remote-Stand zu holen.',
     ],
-    docsUrl: 'https://docs.github.com/en/get-started/using-git/about-git',
+    docsUrl: 'https://docs.github.com/en/get-started/using-git',
     docsLabel: 'GitHub Docs: Using Git',
   },
   {
@@ -194,50 +323,92 @@ export const lessons: Lesson[] = [
     slug: 'branches',
     title: 'Branches',
     subtitle: 'Neue Funktionen getrennt vom Hauptstand entwickeln.',
-    duration: '15–20 Min.',
+    duration: '30–35 Min.',
     intro:
-      'Ein Branch ist eine eigene Entwicklungslinie. Du kannst Änderungen ausprobieren, ohne den stabilen main-Branch direkt zu verändern. Das ist besonders wichtig, wenn mehrere Personen gleichzeitig arbeiten.',
+      'Branches sind einer der wichtigsten Bestandteile professioneller Git-Workflows. Sie erlauben parallele Änderungen, ohne den stabilen main-Branch direkt zu verändern.',
     goals: [
-      'Verstehen, warum Branches genutzt werden.',
-      'Einen Feature-Branch erstellen und wechseln.',
-      'Eine sinnvolle Branch-Benennung verwenden.',
+      'Den Zweck von Branches erklären.',
+      'Branches erstellen, wechseln und veröffentlichen.',
+      'Einen einfachen Feature-Branch-Workflow durchführen.',
     ],
-    sections: [
+    chapters: [
       {
-        title: 'Feature-Branch erstellen',
+        slug: 'warum-branches',
+        title: 'Warum Branches?',
+        summary: 'Parallel arbeiten, ohne main zu gefährden.',
+        duration: '8 Min.',
         text:
-          'Erstelle für eine neue Aufgabe einen eigenen Branch. Der Name sollte erkennen lassen, woran gearbeitet wird.',
-        code: 'git checkout -b feature/login-form',
+          'Ein Branch ist eine eigene Entwicklungslinie. Neue Funktionen, Fehlerbehebungen oder Experimente können getrennt vom Hauptstand entwickelt werden.',
+        bullets: [
+          'main bleibt möglichst stabil.',
+          'Mehrere Personen können parallel arbeiten.',
+          'Änderungen werden erst nach Prüfung zusammengeführt.',
+        ],
+        task: [
+          'Überlege dir zwei Situationen, in denen ein eigener Branch sinnvoll ist.',
+          'Erkläre, warum direkte Änderungen auf main riskanter sind.',
+        ],
+        docsUrl: 'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches',
+        docsLabel: 'About branches',
       },
       {
-        title: 'Branch-Namen',
+        slug: 'branch-erstellen',
+        title: 'Branch erstellen & wechseln',
+        summary: 'Eine neue Entwicklungslinie anlegen.',
+        duration: '10 Min.',
         text:
-          'Einheitliche Namen helfen im Team. Häufig werden Präfixe wie feature, fix oder docs verwendet.',
+          'Mit git switch -c oder git checkout -b erstellst du einen neuen Branch und wechselst direkt darauf. Der Name sollte den Zweck beschreiben.',
+        code: 'git switch -c feature/login-form\n# alternativ\ngit checkout -b feature/login-form\n\ngit branch',
         bullets: [
           'feature/login-form',
           'fix/mobile-navigation',
-          'docs/readme-setup',
+          'docs/readme-update',
         ],
+        task: [
+          'Erstelle feature/readme-update.',
+          'Prüfe mit git branch, welcher Branch aktiv ist.',
+          'Ändere die README nur auf diesem Branch.',
+        ],
+        docsUrl: 'https://docs.github.com/en/get-started/using-git/managing-remote-repositories',
+        docsLabel: 'Managing remote repositories',
       },
       {
-        title: 'Warum nicht direkt auf main?',
+        slug: 'branch-workflow',
+        title: 'Feature-Branch-Workflow',
+        summary: 'Änderung entwickeln, pushen und für Review vorbereiten.',
+        duration: '12–15 Min.',
         text:
-          'Der main-Branch sollte möglichst stabil bleiben. Auf einem eigenen Branch kannst du Änderungen testen und erst nach einem Review zusammenführen.',
+          'Ein typischer Ablauf beginnt auf main. Danach wird ein Feature-Branch erstellt, die Änderung umgesetzt, committet und zu GitHub gepusht. Anschliessend folgt der Pull Request.',
+        steps: [
+          'main aktualisieren.',
+          'Feature-Branch erstellen.',
+          'Änderung umsetzen und testen.',
+          'Commit erstellen.',
+          'Branch pushen.',
+          'Pull Request öffnen.',
+        ],
+        code: 'git switch main\ngit pull\ngit switch -c feature/readme-update\n# Dateien ändern\ngit add .\ngit commit -m "README erweitern"\ngit push -u origin feature/readme-update',
+        task: [
+          'Führe den vollständigen Ablauf mit deinem Test-Repository durch.',
+          'Kontrolliere auf GitHub, dass main und Feature-Branch unterschiedlich sind.',
+        ],
+        docsUrl: 'https://docs.github.com/en/get-started/using-git/about-git',
+        docsLabel: 'About Git',
       },
     ],
     exercise: {
-      title: 'Praxis',
+      title: 'Modul-Challenge',
       tasks: [
-        'Erstelle den Branch feature/readme-update.',
-        'Ändere dort die README.',
+        'Erstelle einen Feature-Branch.',
+        'Setze eine kleine Änderung um.',
         'Committe und pushe den Branch.',
-        'Kontrolliere auf GitHub, dass main noch unverändert ist.',
+        'Bereite ihn für einen Pull Request vor.',
       ],
     },
     mistakes: [
-      'Alle Änderungen direkt auf main durchführen.',
-      'Unklare Branch-Namen wie test2 oder neu verwenden.',
-      'Alte, bereits gemergte Branches unnötig weiterverwenden.',
+      'Alles direkt auf main entwickeln.',
+      'Unklare Branch-Namen wie neu2 verwenden.',
+      'Vor dem Erstellen des Branches den main-Stand nicht aktualisieren.',
     ],
     docsUrl: 'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches',
     docsLabel: 'GitHub Docs: About branches',
@@ -247,110 +418,193 @@ export const lessons: Lesson[] = [
     slug: 'pull-requests',
     title: 'Pull Requests & Reviews',
     subtitle: 'Änderungen gemeinsam prüfen und sicher zusammenführen.',
-    duration: '20 Min.',
+    duration: '30–35 Min.',
     intro:
-      'Ein Pull Request zeigt die Unterschiede zwischen zwei Branches und schlägt vor, sie zusammenzuführen. Er ist der zentrale Ort für Review, Diskussion und Freigabe.',
+      'Pull Requests verbinden Entwicklung und Zusammenarbeit. Sie zeigen Änderungen, ermöglichen Feedback und schaffen einen nachvollziehbaren Freigabeprozess.',
     goals: [
-      'Einen Pull Request erstellen.',
-      'Änderungen im Diff lesen.',
-      'Review-Kommentare verstehen und auf Feedback reagieren.',
+      'Pull Requests korrekt erstellen.',
+      'Diffs lesen und Reviews verstehen.',
+      'Änderungen sicher mergen.',
     ],
-    sections: [
+    chapters: [
       {
+        slug: 'pull-request-erstellen',
         title: 'Pull Request erstellen',
+        summary: 'Eine Änderung verständlich zur Prüfung einreichen.',
+        duration: '10 Min.',
         text:
-          'Nachdem dein Branch auf GitHub liegt, kannst du einen Pull Request Richtung main öffnen. Titel und Beschreibung sollten klar erklären, was geändert wurde und warum.',
+          'Wenn dein Branch auf GitHub liegt, kannst du einen Pull Request Richtung main öffnen. Titel und Beschreibung sollen erklären, was geändert wurde und warum.',
         bullets: [
-          'Kurzen, konkreten Titel verwenden.',
-          'In der Beschreibung Änderung und Test erklären.',
-          'Bei Bedarf Issue oder Aufgabe verlinken.',
+          'Konkreten Titel verwenden.',
+          'Änderung und Grund beschreiben.',
+          'Tests oder Prüfschritte erwähnen.',
+          'Bei Bedarf ein Issue verlinken.',
         ],
+        task: [
+          'Öffne für deinen Feature-Branch einen Pull Request.',
+          'Schreibe eine kurze Beschreibung mit Was? Warum? Wie getestet?',
+        ],
+        docsUrl: 'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request',
+        docsLabel: 'Creating a pull request',
       },
       {
-        title: 'Changes prüfen',
+        slug: 'diff-und-review',
+        title: 'Diff & Review',
+        summary: 'Änderungen lesen, kommentieren und verbessern.',
+        duration: '10–12 Min.',
         text:
-          'Im Tab Files changed siehst du, welche Zeilen entfernt oder ergänzt wurden. Reviewer können einzelne Zeilen kommentieren und Änderungen verlangen.',
+          'Im Bereich Files changed siehst du den Diff. Hinzugefügte und entfernte Zeilen werden direkt gegenübergestellt. Reviewer können einzelne Zeilen kommentieren, Fragen stellen oder Änderungen verlangen.',
+        bullets: [
+          'Prüfe nur die Änderungen, nicht nur das Endergebnis.',
+          'Feedback sachlich und konkret formulieren.',
+          'Offene Kommentare vor dem Merge klären.',
+        ],
+        task: [
+          'Öffne Files changed in deinem Pull Request.',
+          'Lies jede geänderte Zeile.',
+          'Schreibe einen Beispiel-Review-Kommentar.',
+        ],
+        docsUrl: 'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests',
+        docsLabel: 'Reviewing changes in pull requests',
       },
       {
-        title: 'Merge',
+        slug: 'merge',
+        title: 'Merge & Aufräumen',
+        summary: 'Freigegebene Änderungen in main übernehmen.',
+        duration: '10 Min.',
         text:
-          'Erst wenn die Änderung geprüft wurde und alle nötigen Checks erfolgreich sind, wird der Pull Request gemerged. Danach kann der Feature-Branch meistens gelöscht werden.',
+          'Nach erfolgreichem Review kann der Pull Request gemerged werden. Danach wird der Feature-Branch häufig gelöscht. Lokal holst du anschliessend den neuen main-Stand.',
+        steps: [
+          'Offene Review-Kommentare klären.',
+          'Checks kontrollieren.',
+          'Pull Request mergen.',
+          'Feature-Branch auf GitHub löschen.',
+          'Lokal auf main wechseln und pull ausführen.',
+        ],
+        code: 'git switch main\ngit pull\ngit branch -d feature/readme-update',
+        task: [
+          'Merge deinen Übungs-Pull-Request.',
+          'Lösche den Branch auf GitHub.',
+          'Aktualisiere deinen lokalen main-Branch.',
+        ],
+        docsUrl: 'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request',
+        docsLabel: 'Merging a pull request',
       },
     ],
     exercise: {
-      title: 'Praxis',
+      title: 'Modul-Challenge',
       tasks: [
-        'Erstelle für deinen Übungs-Branch einen Pull Request.',
-        'Schreibe eine kurze Beschreibung.',
-        'Öffne Files changed und überprüfe den Diff.',
-        'Merge den Pull Request und lösche danach den Branch.',
+        'Erstelle einen vollständigen Pull Request.',
+        'Prüfe den Diff.',
+        'Simuliere ein Review.',
+        'Merge und räume den Branch anschliessend auf.',
       ],
     },
     mistakes: [
-      'Pull Request ohne Beschreibung erstellen.',
-      'Sehr grosse Pull Requests mit vielen Themen gleichzeitig.',
-      'Merge durchführen, obwohl offene Review-Kommentare vorhanden sind.',
+      'Pull Requests ohne Beschreibung erstellen.',
+      'Sehr grosse Pull Requests mit mehreren Themen.',
+      'Mergen, obwohl offene Review-Kommentare bestehen.',
     ],
-    docsUrl: 'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request',
-    docsLabel: 'GitHub Docs: Creating a pull request',
+    docsUrl: 'https://docs.github.com/en/pull-requests',
+    docsLabel: 'GitHub Docs: Pull requests',
   },
   {
     id: 6,
     slug: 'zusammenarbeit',
     title: 'Zusammenarbeit mit Issues & Reviews',
     subtitle: 'Aufgaben, Fehler und Änderungen im Team organisieren.',
-    duration: '15–20 Min.',
+    duration: '30–35 Min.',
     intro:
-      'GitHub ist nicht nur ein Speicherort für Code. Issues, Reviews und Actions machen aus einem Repository eine Arbeitsplattform für Teams.',
+      'GitHub kann als gemeinsame Arbeitsplattform genutzt werden. Issues strukturieren Aufgaben, Reviews verbessern Qualität und einfache Regeln sorgen für einen nachvollziehbaren Team-Workflow.',
     goals: [
-      'Issues für Aufgaben und Fehler verwenden.',
-      'Reviews als Qualitätskontrolle verstehen.',
-      'Einfache Regeln für gute Zusammenarbeit anwenden.',
+      'Issues sinnvoll formulieren.',
+      'Reviews konstruktiv durchführen.',
+      'Issue, Branch und Pull Request miteinander verbinden.',
     ],
-    sections: [
+    chapters: [
       {
-        title: 'Issues',
+        slug: 'issues',
+        title: 'Issues für Aufgaben & Bugs',
+        summary: 'Arbeit sichtbar und nachvollziehbar organisieren.',
+        duration: '10 Min.',
         text:
-          'Issues können Aufgaben, Bugs oder Ideen dokumentieren. Gute Issues haben einen klaren Titel, genügend Kontext und ein erwartetes Ergebnis.',
+          'Ein Issue kann eine Aufgabe, einen Bug oder eine Idee beschreiben. Gute Issues enthalten genug Kontext, ein klares Ziel und falls nötig Schritte zur Reproduktion.',
         bullets: [
-          'Problem oder Ziel verständlich beschreiben.',
-          'Labels verwenden, wenn das Team sie nutzt.',
-          'Verantwortliche Person und Meilenstein zuweisen, wenn sinnvoll.',
+          'Kurzer, eindeutiger Titel.',
+          'Beschreibung des Problems oder Ziels.',
+          'Erwartetes Ergebnis.',
+          'Labels, Verantwortliche und Milestones bei Bedarf.',
         ],
+        task: [
+          'Erstelle ein Issue für eine kleine Verbesserung.',
+          'Formuliere Ziel und Akzeptanzkriterium.',
+          'Vergib ein sinnvolles Label, falls vorhanden.',
+        ],
+        docsUrl: 'https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues',
+        docsLabel: 'About issues',
       },
       {
-        title: 'Code Reviews',
+        slug: 'reviews-im-team',
+        title: 'Gute Reviews im Team',
+        summary: 'Qualität verbessern und Wissen teilen.',
+        duration: '10 Min.',
         text:
-          'Reviews helfen dabei, Fehler früh zu erkennen und Wissen zu teilen. Feedback sollte sachlich und konkret sein.',
+          'Code Reviews sind nicht nur Fehlersuche. Sie helfen dabei, Wissen im Team zu teilen, Standards einzuhalten und Änderungen verständlicher zu machen.',
         bullets: [
-          'Fragen stellen statt nur Fehler markieren.',
-          'Vorschläge begründen.',
-          'Kleine Pull Requests lassen sich leichter prüfen.',
+          'Sachlich statt persönlich formulieren.',
+          'Fragen stellen, wenn die Absicht unklar ist.',
+          'Verbesserungsvorschläge begründen.',
+          'Kleine Pull Requests sind leichter zu reviewen.',
         ],
+        task: [
+          'Formuliere einen konstruktiven Review-Kommentar.',
+          'Formuliere denselben Hinweis einmal schlecht und einmal gut.',
+        ],
+        docsUrl: 'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews',
+        docsLabel: 'About pull request reviews',
       },
       {
-        title: 'Ein einfacher Team-Workflow',
+        slug: 'team-workflow',
+        title: 'Vom Issue bis zum Merge',
+        summary: 'Alle GitHub-Bausteine zu einem Workflow verbinden.',
+        duration: '10–15 Min.',
         text:
-          'Eine Aufgabe startet als Issue. Danach wird ein Branch erstellt, die Änderung umgesetzt, als Pull Request eingereicht, reviewed und schliesslich gemerged.',
+          'Ein sauberer Team-Workflow verbindet Planung, Entwicklung und Review. Eine Aufgabe startet als Issue, wird auf einem Branch umgesetzt und endet mit einem überprüften Pull Request.',
+        steps: [
+          'Issue erstellen und Ziel klären.',
+          'Passenden Branch erstellen.',
+          'Änderung in kleinen Commits umsetzen.',
+          'Branch pushen.',
+          'Pull Request öffnen und Issue verlinken.',
+          'Review durchführen.',
+          'Merge und Issue abschliessen.',
+        ],
         code: 'Issue → Branch → Commit → Push → Pull Request → Review → Merge',
+        task: [
+          'Führe den gesamten Ablauf mit einem kleinen Übungs-Issue durch.',
+          'Verknüpfe Pull Request und Issue.',
+          'Prüfe nach dem Merge, ob der Ablauf nachvollziehbar dokumentiert ist.',
+        ],
+        docsUrl: 'https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue',
+        docsLabel: 'Linking a pull request to an issue',
       },
     ],
     exercise: {
-      title: 'Abschlussaufgabe',
+      title: 'Abschluss-Challenge',
       tasks: [
-        'Erstelle ein Issue für eine kleine Verbesserung.',
+        'Erstelle ein Issue für eine Verbesserung.',
         'Erstelle einen passenden Branch.',
         'Setze die Änderung um und öffne einen Pull Request.',
-        'Verknüpfe den Pull Request mit dem Issue.',
+        'Reviewe, merge und schliesse die Aufgabe ab.',
       ],
     },
     mistakes: [
-      'Aufgaben nur mündlich absprechen und nirgends dokumentieren.',
+      'Aufgaben nur mündlich absprechen.',
       'Reviews persönlich statt sachlich formulieren.',
-      'Keine klare Verbindung zwischen Issue, Branch und Pull Request herstellen.',
+      'Issue, Branch und Pull Request nicht miteinander verknüpfen.',
     ],
-    docsUrl: 'https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues',
-    docsLabel: 'GitHub Docs: About issues',
+    docsUrl: 'https://docs.github.com/en/issues',
+    docsLabel: 'GitHub Docs: Issues',
   },
 ]
 
