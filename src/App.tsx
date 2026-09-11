@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
+import { HashRouter, Link, Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 import { lessons, quiz } from './content'
 
 const storageKey = 'github-schulung-progress'
 
-function App() {
+function useProgress() {
   const [done, setDone] = useState<number[]>([])
-  const [answers, setAnswers] = useState<Record<number, number>>({})
-  const [step, setStep] = useState(0)
 
   useEffect(() => {
     const stored = localStorage.getItem(storageKey)
@@ -17,17 +16,40 @@ function App() {
     localStorage.setItem(storageKey, JSON.stringify(done))
   }, [done])
 
-  const progress = Math.round((done.length / lessons.length) * 100)
-  const score = useMemo(
-    () => Object.entries(answers).filter(([i, answer]) => quiz[Number(i)].correct === answer).length,
-    [answers],
-  )
-
   const toggleLesson = (id: number) => {
     setDone(current =>
       current.includes(id) ? current.filter(item => item !== id) : [...current, id],
     )
   }
+
+  return { done, toggleLesson }
+}
+
+function Header() {
+  return (
+    <header className="topbar">
+      <Link className="brand" to="/">
+        <span className="brandMark">GH</span>
+        <span>GitHub Schulung</span>
+      </Link>
+      <nav>
+        <Link to="/">Start</Link>
+        <Link to="/module">Module</Link>
+        <a href="https://docs.github.com/" target="_blank" rel="noreferrer">GitHub Docs ↗</a>
+      </nav>
+    </header>
+  )
+}
+
+function Home({ done, toggleLesson }: { done: number[]; toggleLesson: (id: number) => void }) {
+  const [answers, setAnswers] = useState<Record<number, number>>({})
+  const [step, setStep] = useState(0)
+
+  const progress = Math.round((done.length / lessons.length) * 100)
+  const score = useMemo(
+    () => Object.entries(answers).filter(([i, answer]) => quiz[Number(i)].correct === answer).length,
+    [answers],
+  )
 
   const workflow = [
     ['1', 'Branch', 'Neue Arbeitslinie erstellen'],
@@ -38,231 +60,288 @@ function App() {
   ]
 
   return (
-    <div>
-      <header className="topbar">
-        <a className="brand" href="#top">
-          <span className="brandMark">GH</span>
-          <span>GitHub Schulung</span>
-        </a>
-        <nav>
-          <a href="#lernziele">Lernziele</a>
-          <a href="#module">Module</a>
-          <a href="#praxis">Praxis</a>
-          <a href="#quiz">Quiz</a>
-        </nav>
-      </header>
+    <main>
+      <section className="hero shell">
+        <div className="heroCopy">
+          <p className="eyebrow">Modul 219 · Interaktive Ausbildungssequenz</p>
+          <h1>GitHub verstehen, anwenden und im Team nutzen.</h1>
+          <p className="lead">
+            Sechs richtige Lernmodule mit Erklärungen, Beispielen, Befehlen, Übungen und Links zur offiziellen GitHub-Dokumentation.
+          </p>
+          <div className="actions">
+            <Link className="button primary" to="/module/1">Mit Modul 1 starten</Link>
+            <a className="button" href="https://docs.github.com/" target="_blank" rel="noreferrer">GitHub Docs öffnen ↗</a>
+          </div>
+        </div>
 
-      <main id="top">
-        <section className="hero shell">
-          <div className="heroCopy">
-            <p className="eyebrow">Modul 219 · Interaktive Ausbildungssequenz</p>
-            <h1>GitHub verstehen, anwenden und im Team nutzen.</h1>
-            <p className="lead">
-              Eine praxisnahe Einführung für Lernende und neue Mitarbeitende – von Repository und Commit
-              bis Branch und Pull Request.
-            </p>
-            <div className="actions">
-              <a className="button primary" href="#module">Schulung starten</a>
-              <a className="button" href="#quiz">Wissen testen</a>
-            </div>
+        <aside className="panel progressCard">
+          <span className="tag">Dein Fortschritt</span>
+          <strong>{done.length} / {lessons.length} Module</strong>
+          <div className="progressTrack">
+            <div className="progressFill" style={{ width: `${progress}%` }} />
           </div>
+          <span className="muted">{progress}% abgeschlossen</span>
+        </aside>
+      </section>
 
-          <aside className="panel progressCard">
-            <span className="tag">Dein Fortschritt</span>
-            <strong>{done.length} / {lessons.length} Module</strong>
-            <div className="progressTrack">
-              <div className="progressFill" style={{ width: `${progress}%` }} />
-            </div>
-            <span className="muted">{progress}% abgeschlossen</span>
-          </aside>
-        </section>
+      <section className="shell section">
+        <div className="sectionHead">
+          <p className="eyebrow">Lernpfad</p>
+          <h2>Die 6 Module</h2>
+          <p>Jedes Modul hat jetzt eine eigene Unterseite mit Lernzielen, Erklärungen, Praxisaufgaben und offizieller Dokumentation.</p>
+        </div>
 
-        <section id="lernziele" className="shell section">
-          <div className="sectionHead">
-            <p className="eyebrow">Was du lernst</p>
-            <h2>Lernziele</h2>
-            <p>Nach der Schulung kannst du einen einfachen GitHub-Workflow selbstständig durchführen.</p>
-          </div>
-          <div className="three">
-            <article className="panel">
-              <span className="number">01</span>
-              <h3>Grundbegriffe verstehen</h3>
-              <p>Repository, Commit, Branch, Push, Pull und Pull Request unterscheiden.</p>
-            </article>
-            <article className="panel">
-              <span className="number">02</span>
-              <h3>Änderungen versionieren</h3>
-              <p>Änderungen nachvollziehbar speichern und sinnvoll dokumentieren.</p>
-            </article>
-            <article className="panel">
-              <span className="number">03</span>
-              <h3>Im Team arbeiten</h3>
-              <p>Branches, Pull Requests und Reviews für Zusammenarbeit einsetzen.</p>
-            </article>
-          </div>
-        </section>
-
-        <section id="module" className="shell section">
-          <div className="sectionHead">
-            <p className="eyebrow">Schritt für Schritt</p>
-            <h2>6 Lernmodule</h2>
-            <p>Bearbeite die Module der Reihe nach und markiere sie als abgeschlossen.</p>
-          </div>
-          <div className="lessonGrid">
-            {lessons.map(lesson => {
-              const completed = done.includes(lesson.id)
-              return (
-                <article className={`panel lesson ${completed ? 'completed' : ''}`} key={lesson.id}>
-                  <div className="lessonTop">
-                    <span className="tag">Modul {lesson.id}</span>
-                    <button
-                      className="completeButton"
-                      onClick={() => toggleLesson(lesson.id)}
-                      aria-pressed={completed}
-                    >
-                      {completed ? 'Erledigt ✓' : 'Als erledigt markieren'}
-                    </button>
-                  </div>
-                  <h3>{lesson.title}</h3>
-                  <p>{lesson.subtitle}</p>
-                  <ul>
-                    {lesson.points.map(point => <li key={point}>{point}</li>)}
-                  </ul>
-                </article>
-              )
-            })}
-          </div>
-        </section>
-
-        <section id="praxis" className="shell section">
-          <div className="sectionHead">
-            <p className="eyebrow">Interaktiv</p>
-            <h2>GitHub-Workflow Simulator</h2>
-            <p>Klicke dich durch einen typischen Ablauf einer kleinen Änderung.</p>
-          </div>
-
-          <div className="panel simulator">
-            <div className="workflow">
-              {workflow.map(([n, title, desc], index) => (
-                <button
-                  key={title}
-                  className={`workflowStep ${index <= step ? 'active' : ''}`}
-                  onClick={() => setStep(index)}
-                >
-                  <span>{n}</span>
-                  <strong>{title}</strong>
-                  <small>{desc}</small>
-                </button>
-              ))}
-            </div>
-            <div className="simulatorInfo">
-              <span className="tag">Aktueller Schritt</span>
-              <h3>{workflow[step][1]}</h3>
-              <p>{workflow[step][2]}</p>
-              <code>
-                {step === 0 && 'git checkout -b feature/meine-aenderung'}
-                {step === 1 && 'Datei bearbeiten und speichern'}
-                {step === 2 && 'git add . && git commit -m "Änderung beschreiben"'}
-                {step === 3 && 'git push -u origin feature/meine-aenderung'}
-                {step === 4 && 'Pull Request auf GitHub erstellen'}
-              </code>
-            </div>
-          </div>
-        </section>
-
-        <section className="shell section">
-          <div className="sectionHead">
-            <p className="eyebrow">Cheat-Sheet</p>
-            <h2>Die wichtigsten Befehle</h2>
-          </div>
-          <div className="two">
-            <div className="panel codePanel">
-              <pre>{`git clone <URL>
-git status
-git checkout -b feature/meine-aenderung
-git add .
-git commit -m "Kurze klare Nachricht"
-git push -u origin feature/meine-aenderung
-git pull`}</pre>
-            </div>
-            <div className="panel">
-              <h3>Merksätze</h3>
-              <ul className="largeList">
-                <li><b>Commit:</b> speichert einen Zwischenstand.</li>
-                <li><b>Push:</b> lädt Commits zu GitHub hoch.</li>
-                <li><b>Pull:</b> holt aktuelle Änderungen herunter.</li>
-                <li><b>Branch:</b> trennt Arbeiten voneinander.</li>
-                <li><b>Pull Request:</b> ermöglicht Review und Merge.</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section id="quiz" className="shell section">
-          <div className="sectionHead">
-            <p className="eyebrow">Gamification</p>
-            <h2>Wissens-Check</h2>
-            <p>5 Fragen · 1 Punkt pro richtige Antwort</p>
-          </div>
-          <div className="quizGrid">
-            {quiz.map((item, qIndex) => (
-              <article className="panel quizCard" key={item.question}>
-                <span className="tag">Frage {qIndex + 1}</span>
-                <h3>{item.question}</h3>
-                <div className="answerList">
-                  {item.answers.map((answer, aIndex) => {
-                    const selected = answers[qIndex] === aIndex
-                    const answered = qIndex in answers
-                    const correct = answered && aIndex === item.correct
-                    const wrong = selected && aIndex !== item.correct
-                    return (
-                      <button
-                        key={answer}
-                        className={`answer ${correct ? 'correct' : ''} ${wrong ? 'wrong' : ''}`}
-                        onClick={() => !answered && setAnswers(current => ({ ...current, [qIndex]: aIndex }))}
-                        disabled={answered}
-                      >
-                        {answer}
-                      </button>
-                    )
-                  })}
+        <div className="lessonGrid">
+          {lessons.map(lesson => {
+            const completed = done.includes(lesson.id)
+            return (
+              <article className={`panel lesson ${completed ? 'completed' : ''}`} key={lesson.id}>
+                <div className="lessonTop">
+                  <span className="tag">Modul {lesson.id} · {lesson.duration}</span>
+                  <span className={completed ? 'status doneStatus' : 'status'}>{completed ? 'Abgeschlossen ✓' : 'Offen'}</span>
+                </div>
+                <h3>{lesson.title}</h3>
+                <p>{lesson.subtitle}</p>
+                <ul>
+                  {lesson.goals.slice(0, 3).map(goal => <li key={goal}>{goal}</li>)}
+                </ul>
+                <div className="lessonActions">
+                  <Link className="button primary" to={`/module/${lesson.id}`}>Modul öffnen</Link>
+                  <button className="button" onClick={() => toggleLesson(lesson.id)}>
+                    {completed ? 'Zurücksetzen' : 'Als erledigt markieren'}
+                  </button>
                 </div>
               </article>
+            )
+          })}
+        </div>
+      </section>
+
+      <section className="shell section">
+        <div className="sectionHead">
+          <p className="eyebrow">Interaktiv</p>
+          <h2>GitHub-Workflow Simulator</h2>
+          <p>Klicke dich durch einen typischen Ablauf einer kleinen Änderung.</p>
+        </div>
+
+        <div className="panel simulator">
+          <div className="workflow">
+            {workflow.map(([n, title, desc], index) => (
+              <button
+                key={title}
+                className={`workflowStep ${index <= step ? 'active' : ''}`}
+                onClick={() => setStep(index)}
+              >
+                <span>{n}</span>
+                <strong>{title}</strong>
+                <small>{desc}</small>
+              </button>
             ))}
           </div>
-
-          <div className="panel result">
-            <span className="tag">Ergebnis</span>
-            <strong>{score} / {quiz.length} Punkte</strong>
-            <p>
-              {Object.keys(answers).length < quiz.length
-                ? 'Beantworte alle Fragen, um dein Endergebnis zu sehen.'
-                : score >= 4
-                  ? 'Sehr gut. Du hast die wichtigsten GitHub-Grundlagen verstanden.'
-                  : 'Wiederhole die Module kurz und versuche den Workflow danach praktisch.'}
-            </p>
+          <div className="simulatorInfo">
+            <span className="tag">Aktueller Schritt</span>
+            <h3>{workflow[step][1]}</h3>
+            <p>{workflow[step][2]}</p>
+            <code>
+              {step === 0 && 'git checkout -b feature/meine-aenderung'}
+              {step === 1 && 'Datei bearbeiten und speichern'}
+              {step === 2 && 'git add . && git commit -m "Änderung beschreiben"'}
+              {step === 3 && 'git push -u origin feature/meine-aenderung'}
+              {step === 4 && 'Pull Request auf GitHub erstellen'}
+            </code>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="shell section">
-          <div className="challenge">
-            <div>
-              <p className="eyebrow">Praxis-Challenge</p>
-              <h2>Jetzt selbst ausprobieren</h2>
-              <p>
-                Erstelle ein Test-Repository, lege einen Branch an, ändere die README, committe und pushe
-                die Änderung und erstelle danach einen Pull Request.
-              </p>
-            </div>
-            <span className="challengeBadge">+100 XP</span>
+      <section id="quiz" className="shell section">
+        <div className="sectionHead">
+          <p className="eyebrow">Gamification</p>
+          <h2>Wissens-Check</h2>
+          <p>5 Fragen · 1 Punkt pro richtige Antwort</p>
+        </div>
+        <div className="quizGrid">
+          {quiz.map((item, qIndex) => (
+            <article className="panel quizCard" key={item.question}>
+              <span className="tag">Frage {qIndex + 1}</span>
+              <h3>{item.question}</h3>
+              <div className="answerList">
+                {item.answers.map((answer, aIndex) => {
+                  const selected = answers[qIndex] === aIndex
+                  const answered = qIndex in answers
+                  const correct = answered && aIndex === item.correct
+                  const wrong = selected && aIndex !== item.correct
+                  return (
+                    <button
+                      key={answer}
+                      className={`answer ${correct ? 'correct' : ''} ${wrong ? 'wrong' : ''}`}
+                      onClick={() => !answered && setAnswers(current => ({ ...current, [qIndex]: aIndex }))}
+                      disabled={answered}
+                    >
+                      {answer}
+                    </button>
+                  )
+                })}
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="panel result">
+          <span className="tag">Ergebnis</span>
+          <strong>{score} / {quiz.length} Punkte</strong>
+          <p>
+            {Object.keys(answers).length < quiz.length
+              ? 'Beantworte alle Fragen, um dein Endergebnis zu sehen.'
+              : score >= 4
+                ? 'Sehr gut. Du hast die wichtigsten GitHub-Grundlagen verstanden.'
+                : 'Wiederhole die Module kurz und versuche den Workflow danach praktisch.'}
+          </p>
+        </div>
+      </section>
+    </main>
+  )
+}
+
+function ModuleOverview() {
+  return (
+    <main className="shell section pageTop">
+      <div className="sectionHead">
+        <p className="eyebrow">Übersicht</p>
+        <h2>Alle Lernmodule</h2>
+        <p>Wähle ein Modul aus. Du kannst auch direkt ein bestimmtes Thema wiederholen.</p>
+      </div>
+      <div className="lessonGrid">
+        {lessons.map(lesson => (
+          <Link className="panel lesson lessonLink" to={`/module/${lesson.id}`} key={lesson.id}>
+            <span className="tag">Modul {lesson.id} · {lesson.duration}</span>
+            <h3>{lesson.title}</h3>
+            <p>{lesson.subtitle}</p>
+            <span className="textLink">Unterseite öffnen →</span>
+          </Link>
+        ))}
+      </div>
+    </main>
+  )
+}
+
+function LessonPage({ done, toggleLesson }: { done: number[]; toggleLesson: (id: number) => void }) {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const lesson = lessons.find(item => item.id === Number(id))
+
+  if (!lesson) return <Navigate to="/" replace />
+
+  const completed = done.includes(lesson.id)
+  const previous = lessons.find(item => item.id === lesson.id - 1)
+  const next = lessons.find(item => item.id === lesson.id + 1)
+
+  return (
+    <main className="shell lessonPage">
+      <div className="lessonBreadcrumb">
+        <Link to="/">Start</Link>
+        <span>/</span>
+        <Link to="/module">Module</Link>
+        <span>/</span>
+        <span>Modul {lesson.id}</span>
+      </div>
+
+      <section className="lessonHero">
+        <div>
+          <p className="eyebrow">Modul {lesson.id} · {lesson.duration}</p>
+          <h1>{lesson.title}</h1>
+          <p className="lead">{lesson.intro}</p>
+          <div className="actions">
+            <button className={`button ${completed ? '' : 'primary'}`} onClick={() => toggleLesson(lesson.id)}>
+              {completed ? 'Als offen markieren' : 'Modul als abgeschlossen markieren'}
+            </button>
+            <a className="button docsButton" href={lesson.docsUrl} target="_blank" rel="noreferrer">
+              Offizielle GitHub-Dokumentation ↗
+            </a>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <footer>
-        <div className="shell">GitHub Schulung · Modul 219 · Interaktive Benutzerdokumentation</div>
-      </footer>
-    </div>
+      <div className="lessonLayout">
+        <aside className="panel lessonSidebar">
+          <span className="tag">Lernziele</span>
+          <ul>
+            {lesson.goals.map(goal => <li key={goal}>{goal}</li>)}
+          </ul>
+          <a className="docsCard" href={lesson.docsUrl} target="_blank" rel="noreferrer">
+            <span>Quelle & Vertiefung</span>
+            <strong>{lesson.docsLabel}</strong>
+            <small>docs.github.com ↗</small>
+          </a>
+        </aside>
+
+        <div className="lessonContent">
+          {lesson.sections.map((section, index) => (
+            <article className="panel contentBlock" key={section.title}>
+              <span className="number">0{index + 1}</span>
+              <h2>{section.title}</h2>
+              <p>{section.text}</p>
+              {section.bullets && (
+                <ul className="largeList">
+                  {section.bullets.map(item => <li key={item}>{item}</li>)}
+                </ul>
+              )}
+              {section.code && <pre className="lessonCode">{section.code}</pre>}
+            </article>
+          ))}
+
+          <article className="panel exerciseBlock">
+            <span className="tag">Praxis</span>
+            <h2>{lesson.exercise.title}</h2>
+            <ol>
+              {lesson.exercise.tasks.map(task => <li key={task}>{task}</li>)}
+            </ol>
+          </article>
+
+          <article className="panel mistakesBlock">
+            <span className="tag">Typische Fehler</span>
+            <h2>Darauf solltest du achten</h2>
+            <ul className="largeList">
+              {lesson.mistakes.map(mistake => <li key={mistake}>{mistake}</li>)}
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <div className="moduleNav">
+        {previous ? (
+          <button className="button" onClick={() => navigate(`/module/${previous.id}`)}>← Modul {previous.id}</button>
+        ) : <span />}
+        <Link className="button" to="/module">Alle Module</Link>
+        {next ? (
+          <button className="button primary" onClick={() => navigate(`/module/${next.id}`)}>Modul {next.id} →</button>
+        ) : (
+          <Link className="button primary" to="/#quiz">Zum Wissens-Check →</Link>
+        )}
+      </div>
+    </main>
+  )
+}
+
+function App() {
+  const { done, toggleLesson } = useProgress()
+
+  return (
+    <HashRouter>
+      <div>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home done={done} toggleLesson={toggleLesson} />} />
+          <Route path="/module" element={<ModuleOverview />} />
+          <Route path="/module/:id" element={<LessonPage done={done} toggleLesson={toggleLesson} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <footer>
+          <div className="shell footerGrid">
+            <span>GitHub Schulung · Modul 219 · Interaktive Benutzerdokumentation</span>
+            <a href="https://docs.github.com/" target="_blank" rel="noreferrer">Offizielle GitHub Docs ↗</a>
+          </div>
+        </footer>
+      </div>
+    </HashRouter>
   )
 }
 
