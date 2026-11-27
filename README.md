@@ -21,3 +21,6 @@ npm run build
 - Veröffentlichung: bisherige GitHub Pages Actions-Konfiguration beibehalten. Änderungen zunächst auf separatem Branch prüfen.
 
 Die Originalunterlagen werden nicht in das öffentliche Repository hochgeladen. Fachliche Grundlage: GitHub-Benutzerdokumentation v1.0; didaktische Grundlage: M219-Planungsdokument.
+
+## Ausführliche Fachinhalte
+Die 17 Handbuchkapitel sind in `src/handbookDetails.ts` nach Unterkapiteln und Seitenangaben erschlossen. Die Kernseiten enthalten zusätzlich ausführliche Lesestrecken, während die 90-Minuten-Ziele unverändert bleiben. Kapitel 6.4 nutzt den vollständigen HTML-Prototyp als kopierbaren Quellcode und Download; Kapitel 16 nutzt die durchsuchbare Glossar-Ansicht. Bildplatzhalter aus der Vorlage werden nicht als Screenshots dargestellt.
