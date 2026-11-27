@@ -1,0 +1,8 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {initialState,assess,finishAssessment,passStage,canOpen,currentStage,restore,points} from '../src/courseState.ts'
+const a=assess({account:'no',repository:'unknown',browser:'no',interest:''})
+test('quick-check unlocks first module even with zero correct answers',()=>{assert.equal(canOpen(initialState,'intro'),false);const s=finishAssessment(initialState,a);assert.equal(s.assessment?.score,0);assert.equal(canOpen(s,'intro'),true);assert.equal(canOpen(s,'navigation'),false)})
+test('stages cannot be skipped and need full checkpoint score',()=>{let s=finishAssessment(initialState,a);assert.equal(passStage(s,'praxis',100),s);assert.equal(passStage(s,'intro',75),s);s=passStage(s,'intro',100);assert.equal(currentStage(s),'navigation');assert.equal(canOpen(s,'praxis'),false);s=passStage(s,'navigation',100);s=passStage(s,'praxis',100);assert.equal(passStage(s,'challenge',60),s);s=passStage(s,'challenge',80);assert.equal(currentStage(s),null);assert.equal(points(s),380)})
+test('saved progress restores sequential completion and rejects broken data',()=>{let s=finishAssessment(initialState,a);s=passStage(s,'intro',100);assert.deepEqual(restore(JSON.stringify(s)),s);assert.deepEqual(restore('bad'),initialState);const broken={...s,passed:['pre','praxis'],scores:{praxis:100}};assert.equal(currentStage(restore(JSON.stringify(broken))),'intro')})
+test('passed score cannot be downgraded',()=>{let s=finishAssessment(initialState,a);for(const k of ['intro','navigation','praxis'] as const)s=passStage(s,k,100);s=passStage(s,'challenge',100);assert.equal(passStage(s,'challenge',80).scores.challenge,100)})
