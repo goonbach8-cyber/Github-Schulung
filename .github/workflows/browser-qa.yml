@@ -1,0 +1,33 @@
+name: Browser QA
+on:
+  push:
+    branches: [qa-browser-tests]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+      - name: Test production build
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/preview.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/Github-Schulung/ > /dev/null && break; sleep 1; done
+          npx playwright test tests/browser.spec.mjs --workers=1 --reporter=list
+      - name: Test published site
+        if: always()
+        env:
+          SCHOOL_URL: https://goonbach8-cyber.github.io/Github-Schulung/
+        run: npx playwright test tests/browser.spec.mjs --workers=1 --reporter=list
