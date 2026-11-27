@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini CRM – Schulung</title>
+<style>
+:root { font-family: system-ui, sans-serif; color: #17324d; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #edf3f8; line-height: 1.5; }
+header { background: #17324d; color: white; padding: 1.5rem; }
+main { max-width: 1000px; margin: auto; padding: 1rem; }
+h1, h2 { margin-top: 0; }
+section { background: white; padding: 1.2rem; margin-bottom: 1rem; border-radius: .6rem; }
+.stats { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.stat { background: #e7f1f5; padding: 1rem; border-radius: .4rem; }
+.stat strong { display: block; font-size: 1.8rem; }
+label { display: block; font-weight: 600; margin-top: .6rem; }
+input, select, button { font: inherit; padding: .6rem; border: 1px solid #71869b; border-radius: .3rem; }
+input, select { width: 100%; }
+button { margin-top: 1rem; background: #176275; color: white; cursor: pointer; }
+:focus-visible { outline: 3px solid #bd6400; outline-offset: 3px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: .7rem; text-align: left; border-bottom: 1px solid #d5e0e8; }
+caption { text-align: left; font-weight: 600; }
+.note { border-left: 4px solid #bd6400; padding-left: 1rem; }
+#message { min-height: 1.5rem; }
+</style>
+</head>
+<body>
+<header><h1>Mini CRM</h1><p>Schulungsprojekt für eine fiktive KMU</p></header>
+<main>
+<p class="note">Nur fiktive Daten! Neue Einträge verschwinden beim Neuladen. Keine Anmeldung, keine zentrale Speicherung, kein produktives CRM.</p>
+<section aria-labelledby="dashboard">
+<h2 id="dashboard">Dashboard</h2>
+<div class="stats">
+<div class="stat">Kunden gesamt<strong id="total">0</strong></div>
+<div class="stat">Aktive Kunden<strong id="active">0</strong></div>
+<div class="stat">Interessenten<strong id="leads">0</strong></div>
+</div>
+<p>Die Kennzahlen beziehen sich auf alle gespeicherten Sitzungseinträge.</p>
+</section>
+<section aria-labelledby="customers">
+<h2 id="customers">Kundenverwaltung</h2>
+<label for="search">Nach Firma oder Kontakt suchen</label>
+<input id="search" type="search" placeholder="Zum Beispiel Alpen">
+<p id="result" role="status"></p>
+<div class="table-wrap">
+<table><caption>Kundenliste</caption>
+<thead><tr><th scope="col">Firma</th><th scope="col">Kontakt</th><th scope="col">Status</th></tr></thead>
+<tbody id="rows"></tbody></table>
+</div></section>
+<section aria-labelledby="add">
+<h2 id="add">Kunden hinzufügen</h2>
+<form id="customer-form">
+<label for="company">Firma</label><input id="company" required maxlength="80" autocomplete="off">
+<label for="contact">Kontaktperson</label><input id="contact" required maxlength="80" autocomplete="off">
+<label for="status">Status</label><select id="status"><option>Aktiv</option><option>Interessent</option></select>
+<button type="submit">Kunden hinzufügen</button>
+</form><p id="message" role="status"></p>
+</section></main>
+<script>
+'use strict';
+const customers = [
+ { company: 'Alpen Demo AG', contact: 'Kim Muster', status: 'Aktiv' },
+ { company: 'Seeblick Beispiel GmbH', contact: 'Sam Demo', status: 'Interessent' },
+ { company: 'Waldtal Testbetrieb', contact: 'Robin Beispiel', status: 'Aktiv' }
+];
+const byId = id => document.getElementById(id);
+const search = byId('search');
+const rows = byId('rows');
+const form = byId('customer-form');
+function render() {
+ const query = search.value.trim().toLocaleLowerCase('de');
+ const visible = customers.filter(customer => (customer.company + ' ' + customer.contact).toLocaleLowerCase('de').includes(query));
+ rows.replaceChildren();
+ for (const customer of visible) {
+  const row = document.createElement('tr');
+  for (const field of ['company', 'contact', 'status']) {
+   const cell = document.createElement('td');
+   cell.textContent = customer[field];
+   row.appendChild(cell);
+  }
+  rows.appendChild(row);
+ }
+ if (!visible.length) {
+  const row = document.createElement('tr');
+  const cell = document.createElement('td');
+  cell.colSpan = 3;
+  cell.textContent = 'Keine passenden Kunden gefunden.';
+  row.appendChild(cell);
+  rows.appendChild(row);
+ }
+ byId('result').textContent = visible.length + ' Treffer';
+ byId('total').textContent = customers.length;
+ byId('active').textContent = customers.filter(customer => customer.status === 'Aktiv').length;
+ byId('leads').textContent = customers.filter(customer => customer.status === 'Interessent').length;
+}
+search.addEventListener('input', render);
+form.addEventListener('submit', event => {
+ event.preventDefault();
+ const company = byId('company').value.trim();
+ const contact = byId('contact').value.trim();
+ const status = byId('status').value;
+ if (!company || !contact) { byId('message').textContent = 'Bitte Firma und Kontakt ausfüllen.'; return; }
+ if (!['Aktiv', 'Interessent'].includes(status)) { byId('message').textContent = 'Bitte einen gültigen Status wählen.'; return; }
+ customers.push({ company, contact, status });
+ form.reset();
+ search.value = '';
+ render();
+ byId('message').textContent = 'Kunde für diese Sitzung hinzugefügt. Nicht dauerhaft gespeichert.';
+ byId('company').focus();
+});
+render();
+</script>
+</body></html>
