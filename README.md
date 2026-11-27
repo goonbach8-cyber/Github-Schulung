@@ -27,3 +27,6 @@ Die 17 Handbuchkapitel sind in `src/handbookDetails.ts` nach Unterkapiteln und S
 
 ## Geführter Lernpfad
 Der Quick-Check schaltet die Grundlagen frei; jedes Kernmodul benötigt einen bestandenen Wissenscheck, die Praxis zusätzlich eine lokale Sandbox. Die Challenge benötigt mindestens 80/100. Zustände und Ergebnisse sind im Browser gespeichert; direkte Modul-URLs werden per Route Guard gesperrt. Nach Abschluss ist die Dokumentation frei zugänglich. Dies ist lokale Lernlogik, keine serverseitige Zugriffssicherung oder echte GitHub-Aktionsprüfung. `npm test` prüft die Zustandslogik.
+
+## Lernstudio
+Vier aufeinander aufbauende Lernschritte pro Kernmodul, interaktive Versionshistorie, Begriffszuordnung, Branch-Visualisierung, GitHub-Navigationsmissionen und Repository-Sandbox. Quick-Check blendet zusätzliche Einstiegserklärungen ein. Jeder absolvierte Schritt und sein Ergebnis werden im bestehenden lokalen Kurszustand gespeichert. Das Nachschlagewerk ist jederzeit als Lernhilfe zugänglich; Modul-URLs bleiben geschützt durch die Lernlogik. Die Simulation erstellt keine echten GitHub-Objekte. Die bestehenden Abschlussprüfungen bleiben verbindlich.
